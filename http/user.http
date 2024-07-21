@@ -1,0 +1,48 @@
+POST http://localhost:3000/user
+content-type: application/json
+
+{
+    "id": "ca4487c4-3d60-4511-8ef3-143ebb134043",
+    "name": "AdamT",
+    "nickname": "tytus"
+}
+
+###
+
+GET http://localhost:3000/user/ca4487c4-3d60-4511-8ef3-143ebb134043
+
+###
+
+GET http://localhost:3000/user
+
+
+###
+
+PATCH http://localhost:3000/user/ca4487c4-3d60-4511-8ef3-143ebb134043
+Content-Type: application/json
+
+{
+    "name": "Adam Tyton"
+}
+
+###
+
+DELETE http://localhost:3000/user/ca4487c4-3d60-4511-8ef3-143ebb134043
+
+###
+
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+  "formFields": [
+    {
+      "id": "email",
+      "value": "adamtyton1@gmail.com"
+    },
+    {
+      "id": "password",
+      "value": "#Dupa1234"
+    }
+  ]
+}

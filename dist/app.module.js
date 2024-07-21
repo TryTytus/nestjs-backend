@@ -11,6 +11,8 @@ const common_1 = require("@nestjs/common");
 const auth_module_1 = require("./auth/auth.module");
 const app_service_1 = require("./app.service");
 const app_controller_1 = require("./app.controller");
+const user_module_1 = require("./user/user.module");
+const prisma_service_1 = require("./prisma.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -27,9 +29,10 @@ exports.AppModule = AppModule = __decorate([
                     websiteBasePath: '/auth',
                 },
             }),
+            user_module_1.UserModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, prisma_service_1.PrismaService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

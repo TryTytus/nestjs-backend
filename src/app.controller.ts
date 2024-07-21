@@ -2,12 +2,14 @@ import { Controller, Get, UseGuards } from '@nestjs/common';
 import { SessionContainer } from 'supertokens-node/recipe/session';
 import { AuthGuard } from './auth/auth.guard';
 import { Session } from './auth/session/session.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
   // ...
   // Test endpoint for session verification; not part of the Supertokens setup.
   @Get('/test')
+  @ApiBearerAuth()
   @UseGuards(new AuthGuard())
   getSessionInfo(
     @Session() session: SessionContainer,

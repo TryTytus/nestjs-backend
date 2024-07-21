@@ -16,6 +16,7 @@ exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_guard_1 = require("./auth/auth.guard");
 const session_decorator_1 = require("./auth/session/session.decorator");
+const swagger_1 = require("@nestjs/swagger");
 let AppController = class AppController {
     getSessionInfo(session) {
         return {
@@ -28,6 +29,7 @@ let AppController = class AppController {
 exports.AppController = AppController;
 __decorate([
     (0, common_1.Get)('/test'),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
     __param(0, (0, session_decorator_1.Session)()),
     __metadata("design:type", Function),

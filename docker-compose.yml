@@ -11,13 +11,13 @@ services:
       POSTGRES_PASSWORD: password 
       POSTGRES_DB: twitter  
 
-  # mongo:
-  #   image: arm64v8/mongo
-  #   ports:
-  #     - 27017:27017
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: example
+  mongo:
+    image: arm64v8/mongo
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
 
 
   db:

@@ -11,9 +11,9 @@ CommentSchema.add({
   comments: [CommentSchema],
 });
 
-export interface Comment extends Document {
+export interface CommentDoc extends Document {
   content: string;
   userId: string;
   name: string;
-  comments: Comment[];
+  comments: CommentDoc[];
 }

@@ -15,9 +15,9 @@ export declare const CommentSchema: mongoose.Schema<any, mongoose.Model<any, any
 }> & {
     _id: mongoose.Types.ObjectId;
 }>;
-export interface Comment extends Document {
+export interface CommentDoc extends Document {
     content: string;
     userId: string;
     name: string;
-    comments: Comment[];
+    comments: CommentDoc[];
 }

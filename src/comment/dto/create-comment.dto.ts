@@ -1,7 +1,7 @@
-import { Comment } from 'mongodb/comments';
+import { CommentDoc } from 'mongodb/comments';
 import { IsEmpty, IsString } from 'class-validator';
 
-export class CreateCommentDto implements Partial<Comment> {
+export class CreateCommentDto implements Partial<CommentDoc> {
   @IsString()
   content?: string;
 
@@ -12,5 +12,5 @@ export class CreateCommentDto implements Partial<Comment> {
   name?: string;
 
   @IsEmpty()
-  comments?: Comment[];
+  comments?: CommentDoc[];
 }

@@ -15,6 +15,7 @@ const user_module_1 = require("./user/user.module");
 const prisma_service_1 = require("./prisma.service");
 const post_module_1 = require("./post/post.module");
 const comment_module_1 = require("./comment/comment.module");
+const comment_likes_module_1 = require("./comment-likes/comment-likes.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,6 +35,7 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             post_module_1.PostModule,
             comment_module_1.CommentModule,
+            comment_likes_module_1.CommentLikesModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, prisma_service_1.PrismaService],

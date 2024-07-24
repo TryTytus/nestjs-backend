@@ -1,8 +1,19 @@
-import { Controller, Post, Body, Get, Query } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  UseGuards,
+  Session,
+  Param,
+} from '@nestjs/common';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { SessionContainer } from 'supertokens-node/recipe/session';
 
 // interface Comment {
 //   content: string;
@@ -27,10 +38,10 @@ export class Comment {
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Get()
+  @Get(':id')
   @ApiResponse({ status: 200, description: 'Get comments', type: [Comment] })
-  async get(): Promise<Comment[]> {
-    return [await this.commentService.get()];
+  async get(@Param('id') id: string): Promise<Comment[]> {
+    return await this.commentService.get(+id);
   }
 
   @Get('/nested')
@@ -38,11 +49,16 @@ export class CommentController {
     return this.commentService.getNested();
   }
 
-  @Post('/create')
+  @Post()
+  @UseGuards(new AuthGuard())
+  @ApiQuery({ name: 'path', required: false, type: String })
   create(
-    @Body() CreateCommentDto: CreateCommentDto,
-    @Query('path') path: string,
+    @Body() createCommentDto: CreateCommentDto,
+    @Query('path') path: string = '',
+    @Query('postId') postId: string,
+    @Session() session: SessionContainer,
   ) {
-    return this.commentService.create(CreateCommentDto, path);
+    createCommentDto.userId = session.getUserId();
+    return this.commentService.create(createCommentDto, path, postId);
   }
 }

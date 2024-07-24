@@ -11,9 +11,19 @@ CommentSchema.add({
   comments: [CommentSchema],
 });
 
+export const PostSchema = new mongoose.Schema({
+  postId: Number,
+  comments: [CommentSchema],
+});
+
 export interface CommentDoc extends Document {
   content: string;
   userId: string;
   name: string;
+  comments: CommentDoc[];
+}
+
+export interface PostDoc extends Document {
+  postId: number;
   comments: CommentDoc[];
 }

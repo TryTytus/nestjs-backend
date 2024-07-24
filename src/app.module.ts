@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma.service';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
+import { CommentLikesModule } from './comment-likes/comment-likes.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CommentModule } from './comment/comment.module';
     UserModule,
     PostModule,
     CommentModule,
+    CommentLikesModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

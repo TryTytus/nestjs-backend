@@ -1,16 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Post, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
+import { Model } from 'mongoose';
+import { PostDoc } from 'mongodb/comments';
 
 @Injectable()
 export class PostService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject('POST_MODEL') private postModel: Model<PostDoc>,
+  ) {}
 
-  async create(createPostDto: CreatePostDto): Promise<Post> {
-    return await this.prisma.post.create({
+   async create(createPostDto: CreatePostDto): Promise<Post> {
+    const post = await this.prisma.post.create({
       data: createPostDto,
     });
+    await this.postModel.create({ postId: post.id });
+    return post;
   }
 
   async findAll(skip: number, take: number): Promise<Post[]> {

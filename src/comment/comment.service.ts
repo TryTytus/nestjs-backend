@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CommentDoc } from 'mongodb/comments';
+import { CommentDoc, PostDoc } from 'mongodb/comments';
 import { Model } from 'mongoose';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -27,11 +27,18 @@ export class CommentService {
   constructor(
     @Inject('COMMENT_MODEL')
     private commentModel: Model<CommentDoc>,
+    @Inject('POST_MODEL')
+    private postModel: Model<PostDoc>,
   ) {}
 
-  async get(): Promise<Comment> {
-    const _id = '669e65df1fdd5571e92ee1cb';
-    return await this.commentModel.findById(_id);
+  async get(id: number): Promise<Comment[]> {
+    return (
+      await this.postModel
+        .findOne({
+          postId: id,
+        })
+        .exec()
+    ).comments;
   }
 
   async getNested(): Promise<Comment> {
@@ -44,10 +51,14 @@ export class CommentService {
     return await this.commentModel.findById(_id).populate(path).exec();
   }
 
-  async create(createCommentDto: CreateCommentDto, path: string) {
+  async create(
+    createCommentDto: CreateCommentDto,
+    path: string,
+    postId: string,
+  ) {
     // const createdCat = new this.commentModel(createCommentDto);
 
-    const _id = '669e65df1fdd5571e92ee1cb';
+    // const _id = '669f94a4a0b50dad62872f8e';
 
     // const newComment: Comment = {
     //   content: 'New nested comment content',
@@ -56,13 +67,14 @@ export class CommentService {
     //   comments: [],
     // };
 
-    const nestedPath = 'comments.0.comments.0.comments';
-
     const updateQuery = {};
-    updateQuery[path] = createCommentDto;
 
-    const updatedComment = await this.commentModel.updateOne(
-      { _id: _id },
+    const fullPath = path === '' ? 'comments' : 'comments.' + path;
+
+    updateQuery[fullPath] = createCommentDto;
+
+    const updatedComment = await this.postModel.updateOne(
+      { postId },
       { $push: updateQuery },
       { new: true }, // This option returns the updated document
     );

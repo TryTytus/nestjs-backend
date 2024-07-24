@@ -8,18 +8,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
+const mongoose_1 = require("mongoose");
 let PostService = class PostService {
-    constructor(prisma) {
+    constructor(prisma, postModel) {
         this.prisma = prisma;
+        this.postModel = postModel;
     }
     async create(createPostDto) {
-        return await this.prisma.post.create({
+        const post = await this.prisma.post.create({
             data: createPostDto,
         });
+        await this.postModel.create({ postId: post.id });
+        return post;
     }
     async findAll(skip, take) {
         return await this.prisma.post.findMany({
@@ -53,6 +60,8 @@ let PostService = class PostService {
 exports.PostService = PostService;
 exports.PostService = PostService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __param(1, (0, common_1.Inject)('POST_MODEL')),
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        mongoose_1.Model])
 ], PostService);
 //# sourceMappingURL=post.service.js.map

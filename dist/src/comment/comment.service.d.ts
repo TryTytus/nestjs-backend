@@ -1,4 +1,4 @@
-import { CommentDoc } from 'mongodb/comments';
+import { CommentDoc, PostDoc } from 'mongodb/comments';
 import { Model } from 'mongoose';
 import { CreateCommentDto } from './dto/create-comment.dto';
 export declare class Comment {
@@ -9,8 +9,9 @@ export declare class Comment {
 }
 export declare class CommentService {
     private commentModel;
-    constructor(commentModel: Model<CommentDoc>);
-    get(): Promise<Comment>;
+    private postModel;
+    constructor(commentModel: Model<CommentDoc>, postModel: Model<PostDoc>);
+    get(id: number): Promise<Comment[]>;
     getNested(): Promise<Comment>;
-    create(createCommentDto: CreateCommentDto, path: string): Promise<CreateCommentDto>;
+    create(createCommentDto: CreateCommentDto, path: string, postId: string): Promise<CreateCommentDto>;
 }

@@ -24,12 +24,13 @@ export class PostController {
 
   @Post()
   @UseGuards(new AuthGuard())
-  create(
+  async create(
     @Body() createPostDto: CreatePostDto,
     @Session() session: SessionContainer,
   ) {
     createPostDto.userId = session.getUserId();
-    return this.postService.create(createPostDto);
+    console.log(JSON.stringify(createPostDto));
+    return await this.postService.create(createPostDto);
   }
 
   @Get()

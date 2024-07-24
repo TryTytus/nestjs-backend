@@ -23,9 +23,10 @@ let PostController = class PostController {
     constructor(postService) {
         this.postService = postService;
     }
-    create(createPostDto, session) {
+    async create(createPostDto, session) {
         createPostDto.userId = session.getUserId();
-        return this.postService.create(createPostDto);
+        console.log(JSON.stringify(createPostDto));
+        return await this.postService.create(createPostDto);
     }
     findAll(skip = 0, take = 15) {
         return this.postService.findAll(skip, take);
@@ -48,7 +49,7 @@ __decorate([
     __param(1, (0, common_1.Session)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_post_dto_1.CreatePostDto, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], PostController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),

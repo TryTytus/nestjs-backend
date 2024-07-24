@@ -15,9 +15,37 @@ export declare const CommentSchema: mongoose.Schema<any, mongoose.Model<any, any
 }> & {
     _id: mongoose.Types.ObjectId;
 }>;
+export declare const PostSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, {
+    comments: mongoose.Types.DocumentArray<{
+        content?: string;
+        userId?: string;
+        name?: string;
+    }>;
+    postId?: number;
+}, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
+    comments: mongoose.Types.DocumentArray<{
+        content?: string;
+        userId?: string;
+        name?: string;
+    }>;
+    postId?: number;
+}>> & mongoose.FlatRecord<{
+    comments: mongoose.Types.DocumentArray<{
+        content?: string;
+        userId?: string;
+        name?: string;
+    }>;
+    postId?: number;
+}> & {
+    _id: mongoose.Types.ObjectId;
+}>;
 export interface CommentDoc extends Document {
     content: string;
     userId: string;
     name: string;
+    comments: CommentDoc[];
+}
+export interface PostDoc extends Document {
+    postId: number;
     comments: CommentDoc[];
 }

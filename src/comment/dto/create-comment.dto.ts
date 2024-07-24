@@ -5,7 +5,7 @@ export class CreateCommentDto implements Partial<CommentDoc> {
   @IsString()
   content?: string;
 
-  @IsString()
+  @IsEmpty()
   userId?: string;
 
   @IsString()

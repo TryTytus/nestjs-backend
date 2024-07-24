@@ -36,24 +36,27 @@ __decorate([
     __metadata("design:type", Array)
 ], Comment.prototype, "comments", void 0);
 let CommentService = class CommentService {
-    constructor(commentModel) {
+    constructor(commentModel, postModel) {
         this.commentModel = commentModel;
+        this.postModel = postModel;
     }
-    async get() {
-        const _id = '669e65df1fdd5571e92ee1cb';
-        return await this.commentModel.findById(_id);
+    async get(id) {
+        return (await this.postModel
+            .findOne({
+            postId: id,
+        })
+            .exec()).comments;
     }
     async getNested() {
         const _id = '669e65df1fdd5571e92ee1cb';
         const path = 'comments.0.comments.0';
         return await this.commentModel.findById(_id).populate(path).exec();
     }
-    async create(createCommentDto, path) {
-        const _id = '669e65df1fdd5571e92ee1cb';
-        const nestedPath = 'comments.0.comments.0.comments';
+    async create(createCommentDto, path, postId) {
         const updateQuery = {};
-        updateQuery[path] = createCommentDto;
-        const updatedComment = await this.commentModel.updateOne({ _id: _id }, { $push: updateQuery }, { new: true });
+        const fullPath = path === '' ? 'comments' : 'comments.' + path;
+        updateQuery[fullPath] = createCommentDto;
+        const updatedComment = await this.postModel.updateOne({ postId }, { $push: updateQuery }, { new: true });
         console.log(updatedComment);
         return createCommentDto;
     }
@@ -62,6 +65,8 @@ exports.CommentService = CommentService;
 exports.CommentService = CommentService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)('COMMENT_MODEL')),
-    __metadata("design:paramtypes", [mongoose_1.Model])
+    __param(1, (0, common_1.Inject)('POST_MODEL')),
+    __metadata("design:paramtypes", [mongoose_1.Model,
+        mongoose_1.Model])
 ], CommentService);
 //# sourceMappingURL=comment.service.js.map

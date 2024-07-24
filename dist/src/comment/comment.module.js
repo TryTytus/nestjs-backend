@@ -12,6 +12,7 @@ const comment_service_1 = require("./comment.service");
 const comment_controller_1 = require("./comment.controller");
 const mongodb_module_1 = require("../../mongodb/mongodb.module");
 const comment_provider_1 = require("./comment.provider");
+const post_provider_1 = require("../post/post.provider");
 let CommentModule = class CommentModule {
 };
 exports.CommentModule = CommentModule;
@@ -19,7 +20,7 @@ exports.CommentModule = CommentModule = __decorate([
     (0, common_1.Module)({
         imports: [mongodb_module_1.MongoDbModule],
         controllers: [comment_controller_1.CommentController],
-        providers: [comment_service_1.CommentService, ...comment_provider_1.commentProviders],
+        providers: [comment_service_1.CommentService, ...comment_provider_1.commentProviders, ...post_provider_1.postProviders],
     })
 ], CommentModule);
 //# sourceMappingURL=comment.module.js.map

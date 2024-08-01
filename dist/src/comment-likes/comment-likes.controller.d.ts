@@ -4,8 +4,10 @@ import { SessionContainer } from 'supertokens-node/recipe/session';
 export declare class CommentLikesController {
     private readonly commentLikesService;
     constructor(commentLikesService: CommentLikesService);
-    create(postId: string, session: SessionContainer): Promise<void>;
-    findAll(): string;
+    create(postId: string, session: SessionContainer): Promise<string>;
+    findAll(): {
+        message: string;
+    };
     findOne(id: string): string;
     update(id: string, updateCommentLikeDto: UpdateCommentLikeDto): string;
     remove(id: string): string;

@@ -8,12 +8,7 @@ export class CommentLikesService {
   constructor(private prisma: PrismaService) {}
 
   async create(postId: number, userId: string) {
-    await this.prisma.commentLikes.create({
-      data: {
-        postId,
-        userId,
-      },
-    });
+    return `This action creates commentLikes`
   }
 
   findAll() {

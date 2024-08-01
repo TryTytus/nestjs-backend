@@ -5,54 +5,10 @@ import { UpdatePostDto } from './dto/update-post.dto';
 export declare class PostController {
     private readonly postService;
     constructor(postService: PostService);
-    create(createPostDto: CreatePostDto, session: SessionContainer): Promise<{
-        id: number;
-        content: string;
-        likesCount: number;
-        viewsCont: number;
-        commentsCount: number;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-    }>;
-    findAll(skip?: number, take?: number): Promise<{
-        id: number;
-        content: string;
-        likesCount: number;
-        viewsCont: number;
-        commentsCount: number;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-    }[]>;
-    findOne(id: string): Promise<{
-        id: number;
-        content: string;
-        likesCount: number;
-        viewsCont: number;
-        commentsCount: number;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-    }>;
-    update(id: string, updatePostDto: UpdatePostDto): Promise<{
-        id: number;
-        content: string;
-        likesCount: number;
-        viewsCont: number;
-        commentsCount: number;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-    }>;
-    remove(id: string): Promise<{
-        id: number;
-        content: string;
-        likesCount: number;
-        viewsCont: number;
-        commentsCount: number;
-        createdAt: Date;
-        updatedAt: Date;
-        userId: string;
-    }>;
+    create(createPostDto: CreatePostDto, session: SessionContainer): Promise<import("./entities/post.entity").Post>;
+    findAll(skip?: string, take?: string, session?: SessionContainer): Promise<import("./entities/post.entity").Post[]>;
+    findOne(id: string, session?: SessionContainer): Promise<import("./entities/post.entity").Post>;
+    update(id: string, updatePostDto: UpdatePostDto): Promise<import("./entities/post.entity").Post>;
+    remove(id: string): Promise<import("./entities/post.entity").Post>;
+    addIndex(): Promise<void>;
 }

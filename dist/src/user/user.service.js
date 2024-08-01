@@ -12,14 +12,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
+const search_service_1 = require("../search.service");
 let UserService = class UserService {
-    constructor(prisma) {
+    constructor(prisma, search) {
         this.prisma = prisma;
+        this.search = search;
     }
     async create(createUserDto) {
-        return await this.prisma.user.create({
+        const user = await this.prisma.user.create({
             data: createUserDto,
         });
+        await this.search.users.addDocuments([
+            { id: user.id, name: user.name, nickname: user.nickname },
+        ]);
+        return user;
     }
     async findAll() {
         return await this.prisma.user.findMany();
@@ -34,14 +40,21 @@ let UserService = class UserService {
         });
     }
     async remove(id) {
-        return await this.prisma.user.delete({
+        const user = await this.prisma.user.delete({
             where: { id },
         });
+        await this.search.users.deleteDocument(id);
+        return user;
+    }
+    async sync() {
+        const posts = (await this.prisma.post.findMany()).map((post) => ({ ...post }));
+        await this.search.posts.addDocuments(posts);
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        search_service_1.SearchService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

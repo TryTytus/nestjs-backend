@@ -63,4 +63,9 @@ export class UserController {
     const userId = session.getUserId();
     return this.userService.remove(userId);
   }
+
+  // @Get('sync')
+  // sync() {
+  //   return this.userService.sync();
+  // }
 }

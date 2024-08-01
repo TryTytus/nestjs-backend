@@ -1,4 +1,5 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import supertokens from 'supertokens-node';
 import { AppModule } from './app.module';
 import {
@@ -11,9 +12,18 @@ import { SupertokensExceptionFilter } from './auth/auth.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
 import { patchDocumentOnRequest } from './openapi';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  
+
+
+  app.useStaticAssets(join(__dirname, '..', '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', '..', 'views'));
+
+  app.setViewEngine('hbs');
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -31,10 +41,11 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, swaggerOpt);
 
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8080'],
     allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
     credentials: true,
   });
+
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));

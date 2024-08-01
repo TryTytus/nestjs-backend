@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 export declare class CommentLikesService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(postId: number, userId: string): Promise<void>;
+    create(postId: number, userId: string): Promise<string>;
     findAll(): string;
     findOne(id: number): string;
     update(id: number, updateCommentLikeDto: UpdateCommentLikeDto): string;

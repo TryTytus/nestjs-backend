@@ -3,15 +3,29 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma.service';
 import { User } from './entities/user.entity';
+import {
+  PostSearchable,
+  SearchService,
+  UserSearchable,
+} from 'src/search.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private search: SearchService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: createUserDto,
     });
+
+    await this.search.users.addDocuments([
+      { id: user.id, name: user.name, nickname: user.nickname },
+    ]);
+
+    return user;
   }
 
   async findAll(): Promise<User[]> {
@@ -30,8 +44,25 @@ export class UserService {
   }
 
   async remove(id: string): Promise<User> {
-    return await this.prisma.user.delete({
+    const user = await this.prisma.user.delete({
       where: { id },
     });
+
+    await this.search.users.deleteDocument(id);
+
+    return user;
+  }
+
+  async sync() {
+    // const users = (await this.prisma.user.findMany()).map(
+    //   (user) => ({ ...user }) as UserSearchable,
+    // );
+
+    const posts = (await this.prisma.post.findMany()).map(
+      (post) => ({ ...post }) as PostSearchable,
+    );
+
+    // await this.search.users.addDocuments(users);
+    await this.search.posts.addDocuments(posts);
   }
 }

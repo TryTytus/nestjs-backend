@@ -16,34 +16,56 @@ exports.PostService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
 const mongoose_1 = require("mongoose");
+const search_service_1 = require("../search.service");
 let PostService = class PostService {
-    constructor(prisma, postModel) {
+    constructor(prisma, postModel, search) {
         this.prisma = prisma;
         this.postModel = postModel;
+        this.search = search;
     }
     async create(createPostDto) {
         const post = await this.prisma.post.create({
             data: createPostDto,
         });
         await this.postModel.create({ postId: post.id });
+        this.search.posts.addDocuments([{ id: post.id, content: post.content }]);
         return post;
     }
-    async findAll(skip, take) {
-        return await this.prisma.post.findMany({
+    async findAll(skip, take, userId) {
+        const posts = await this.prisma.post.findMany({
             include: {
                 user: true,
             },
             skip,
             take,
         });
+        if (userId === undefined)
+            return posts;
+        const likedPosts = await this.prisma.postLikes.findMany({
+            where: { userId },
+            select: { postId: true },
+        });
+        const likedPostsIds = new Set(likedPosts.map((like) => like.postId));
+        const postsWithIsLiked = posts.map((post) => ({
+            ...post,
+            isLiked: likedPostsIds.has(post.id),
+        }));
+        return postsWithIsLiked;
     }
-    async findOne(id) {
-        return await this.prisma.post.findFirstOrThrow({
+    async findOne(id, userId) {
+        const post = await this.prisma.post.findFirstOrThrow({
             where: { id },
             include: {
                 user: true,
             },
         });
+        if (userId === undefined)
+            return post;
+        const isLiked = null !==
+            (await this.prisma.postLikes.findFirst({
+                where: { userId, postId: id },
+            }));
+        return { ...post, isLiked };
     }
     async update(id, updatePostDto) {
         return await this.prisma.post.update({
@@ -52,9 +74,22 @@ let PostService = class PostService {
         });
     }
     async remove(id) {
-        return await this.prisma.post.delete({
+        const post = await this.prisma.post.delete({
             where: { id },
         });
+        await this.postModel.deleteOne({ postId: post.id });
+        await this.search.posts.deleteDocument(post.id);
+        return post;
+    }
+    async addPostToSerchable() {
+        const documents = [
+            {
+                id: 1,
+                content: 'Bajo jajo',
+            },
+        ];
+        let res = await this.search.posts.addDocuments(documents);
+        console.log(res);
     }
 };
 exports.PostService = PostService;
@@ -62,6 +97,7 @@ exports.PostService = PostService = __decorate([
     (0, common_1.Injectable)(),
     __param(1, (0, common_1.Inject)('POST_MODEL')),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        mongoose_1.Model])
+        mongoose_1.Model,
+        search_service_1.SearchService])
 ], PostService);
 //# sourceMappingURL=post.service.js.map

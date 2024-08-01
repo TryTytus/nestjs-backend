@@ -7,15 +7,15 @@ import {
   Param,
   Delete,
   UseGuards,
-  Session,
   Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dto/create-post.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { SessionContainer } from 'supertokens-node/recipe/session';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { Session } from 'src/auth/session/session.decorator';
 
 @Controller('post')
 @ApiTags('post')
@@ -29,18 +29,29 @@ export class PostController {
     @Session() session: SessionContainer,
   ) {
     createPostDto.userId = session.getUserId();
-    console.log(JSON.stringify(createPostDto));
     return await this.postService.create(createPostDto);
   }
 
   @Get()
-  findAll(@Query('skip') skip = 0, @Query('take') take = 15) {
-    return this.postService.findAll(skip, take);
+  @ApiBearerAuth()
+  @UseGuards(new AuthGuard())
+  findAll(
+    @Query('skip') skip = '0',
+    @Query('take') take = '15',
+    @Session() session?: SessionContainer,
+  ) {
+    let userId;
+    if (session !== undefined) userId = session.getUserId();
+    return this.postService.findAll(+skip, +take, userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  @ApiBearerAuth()
+  @UseGuards(new AuthGuard())
+  findOne(@Param('id') id: string, @Session() session?: SessionContainer) {
+    let userId;
+    if (session !== undefined) userId = session.getUserId();
+    return this.postService.findOne(+id, userId);
   }
 
   @Patch(':id')
@@ -53,5 +64,10 @@ export class PostController {
   @UseGuards(new AuthGuard())
   remove(@Param('id') id: string) {
     return this.postService.remove(+id);
+  }
+
+  @Get('addIndex')
+  async addIndex() {
+    return await this.postService.addPostToSerchable();
   }
 }

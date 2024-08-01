@@ -20,7 +20,6 @@ model User {
   createdAt DateTime @default(now()) @db.Timestamptz(3)
 
   posts        Post[]
-  commentLikes CommentLikes[]
   PostLikes    PostLikes[]
 }
 
@@ -35,18 +34,11 @@ model Post {
 
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String         @db.Char(36)
-  CommentLikes CommentLikes[]
+
   PostLikes    PostLikes[]
 }
 
-model CommentLikes {
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId Int
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @db.Char(36)
 
-  @@id([postId, userId])
-}
 
 model PostLikes {
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)

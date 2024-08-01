@@ -19,20 +19,26 @@ const swagger_1 = require("@nestjs/swagger");
 const create_post_dto_1 = require("./dto/create-post.dto");
 const auth_guard_1 = require("../auth/auth.guard");
 const update_post_dto_1 = require("./dto/update-post.dto");
+const session_decorator_1 = require("../auth/session/session.decorator");
 let PostController = class PostController {
     constructor(postService) {
         this.postService = postService;
     }
     async create(createPostDto, session) {
         createPostDto.userId = session.getUserId();
-        console.log(JSON.stringify(createPostDto));
         return await this.postService.create(createPostDto);
     }
-    findAll(skip = 0, take = 15) {
-        return this.postService.findAll(skip, take);
+    findAll(skip = '0', take = '15', session) {
+        let userId;
+        if (session !== undefined)
+            userId = session.getUserId();
+        return this.postService.findAll(+skip, +take, userId);
     }
-    findOne(id) {
-        return this.postService.findOne(+id);
+    findOne(id, session) {
+        let userId;
+        if (session !== undefined)
+            userId = session.getUserId();
+        return this.postService.findOne(+id, userId);
     }
     update(id, updatePostDto) {
         return this.postService.update(+id, updatePostDto);
@@ -40,30 +46,39 @@ let PostController = class PostController {
     remove(id) {
         return this.postService.remove(+id);
     }
+    async addIndex() {
+        return await this.postService.addPostToSerchable();
+    }
 };
 exports.PostController = PostController;
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Session)()),
+    __param(1, (0, session_decorator_1.Session)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_post_dto_1.CreatePostDto, Object]),
     __metadata("design:returntype", Promise)
 ], PostController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
     __param(0, (0, common_1.Query)('skip')),
     __param(1, (0, common_1.Query)('take')),
+    __param(2, (0, session_decorator_1.Session)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", void 0)
 ], PostController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, session_decorator_1.Session)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], PostController.prototype, "findOne", null);
 __decorate([
@@ -83,6 +98,12 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PostController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)('addIndex'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PostController.prototype, "addIndex", null);
 exports.PostController = PostController = __decorate([
     (0, common_1.Controller)('post'),
     (0, swagger_1.ApiTags)('post'),

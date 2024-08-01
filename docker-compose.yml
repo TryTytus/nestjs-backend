@@ -19,7 +19,6 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
 
-
   db:
     image: 'postgres:latest'
     environment:
@@ -56,6 +55,13 @@ services:
       timeout: 5s
       retries: 5
 
+  melisearch:
+    image: getmeili/meilisearch:v1.9
+    ports:
+      - 7700:7700
+    environment:
+      - MASTER_KEY=masterKey
+      
 networks:
   app_network:
     driver: bridge

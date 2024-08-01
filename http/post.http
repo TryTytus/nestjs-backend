@@ -23,3 +23,18 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3000/post/1
+
+###
+
+POST http://localhost:7700/multi-search
+Content-Type: application/json
+
+
+{
+    "queries": [{
+        "indexUid": "users",
+        "limit": 5,
+        "offset": 0,
+        "q": "Adam"
+    }]
+}

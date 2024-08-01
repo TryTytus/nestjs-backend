@@ -8,6 +8,9 @@ import { PrismaService } from './prisma.service';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
 import { CommentLikesModule } from './comment-likes/comment-likes.module';
+import { EventsGateway } from './events/events.gateway';
+import { SearchService } from './search.service';
+import { PostLikesModule } from './post-likes/post-likes.module';
 
 @Module({
   imports: [
@@ -28,8 +31,9 @@ import { CommentLikesModule } from './comment-likes/comment-likes.module';
     PostModule,
     CommentModule,
     CommentLikesModule,
+    PostLikesModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, EventsGateway, SearchService],
 })
 export class AppModule {}

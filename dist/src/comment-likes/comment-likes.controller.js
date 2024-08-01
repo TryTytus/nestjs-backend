@@ -18,6 +18,7 @@ const comment_likes_service_1 = require("./comment-likes.service");
 const update_comment_like_dto_1 = require("./dto/update-comment-like.dto");
 const auth_guard_1 = require("../auth/auth.guard");
 const session_decorator_1 = require("../auth/session/session.decorator");
+const swagger_1 = require("@nestjs/swagger");
 let CommentLikesController = class CommentLikesController {
     constructor(commentLikesService) {
         this.commentLikesService = commentLikesService;
@@ -27,7 +28,7 @@ let CommentLikesController = class CommentLikesController {
         return this.commentLikesService.create(+postId, userId);
     }
     findAll() {
-        return this.commentLikesService.findAll();
+        return { message: 'Hello world!' };
     }
     findOne(id) {
         return this.commentLikesService.findOne(+id);
@@ -51,6 +52,7 @@ __decorate([
 ], CommentLikesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, common_1.Render)('index'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -79,6 +81,7 @@ __decorate([
 ], CommentLikesController.prototype, "remove", null);
 exports.CommentLikesController = CommentLikesController = __decorate([
     (0, common_1.Controller)('comment-likes'),
+    (0, swagger_1.ApiTags)('comment-likes'),
     __metadata("design:paramtypes", [comment_likes_service_1.CommentLikesService])
 ], CommentLikesController);
 //# sourceMappingURL=comment-likes.controller.js.map

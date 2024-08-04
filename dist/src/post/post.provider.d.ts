@@ -5,6 +5,7 @@ export declare const postProviders: {
         comments: import("mongoose").Types.DocumentArray<{
             content?: string;
             userId?: string;
+            likesCount?: number;
             name?: string;
         }>;
         postId?: number;
@@ -12,6 +13,7 @@ export declare const postProviders: {
         comments: import("mongoose").Types.DocumentArray<{
             content?: string;
             userId?: string;
+            likesCount?: number;
             name?: string;
         }>;
         postId?: number;
@@ -19,6 +21,7 @@ export declare const postProviders: {
         comments: import("mongoose").Types.DocumentArray<{
             content?: string;
             userId?: string;
+            likesCount?: number;
             name?: string;
         }>;
         postId?: number;
@@ -28,6 +31,7 @@ export declare const postProviders: {
         comments: import("mongoose").Types.DocumentArray<{
             content?: string;
             userId?: string;
+            likesCount?: number;
             name?: string;
         }>;
         postId?: number;
@@ -35,6 +39,7 @@ export declare const postProviders: {
         comments: import("mongoose").Types.DocumentArray<{
             content?: string;
             userId?: string;
+            likesCount?: number;
             name?: string;
         }>;
         postId?: number;
@@ -42,6 +47,7 @@ export declare const postProviders: {
         comments: import("mongoose").Types.DocumentArray<{
             content?: string;
             userId?: string;
+            likesCount?: number;
             name?: string;
         }>;
         postId?: number;

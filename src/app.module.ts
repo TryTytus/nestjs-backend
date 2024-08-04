@@ -11,6 +11,7 @@ import { CommentLikesModule } from './comment-likes/comment-likes.module';
 import { EventsGateway } from './events/events.gateway';
 import { SearchService } from './search.service';
 import { PostLikesModule } from './post-likes/post-likes.module';
+import { BookmarkModule } from './bookmark/bookmark.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PostLikesModule } from './post-likes/post-likes.module';
     CommentModule,
     CommentLikesModule,
     PostLikesModule,
+    BookmarkModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, EventsGateway, SearchService],

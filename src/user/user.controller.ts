@@ -7,6 +7,9 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,6 +19,14 @@ import { Session } from 'src/auth/session/session.decorator';
 // import { SessionRequest } from 'supertokens-node/framework/express';
 import { SessionContainer } from 'supertokens-node/recipe/session';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
+import multer, { diskStorage } from 'multer';
+import { join } from 'path';
+import { storage } from 'src/storage';
+import { FileUpload } from './dto/file-upload.dto';
 
 // import { Session } from 'inspector';
 
@@ -62,6 +73,51 @@ export class UserController {
   remove(@Session() session: SessionContainer) {
     const userId = session.getUserId();
     return this.userService.remove(userId);
+  }
+
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './public',
+        filename: (req, file, callback) => {
+          callback(
+            null,
+            `${Date.now()}-${Math.round(Math.random() * 1e9)}.${file.originalname.split('.').pop()}`,
+          );
+        },
+      }),
+    }),
+  )
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return 'file uploaded';
+  }
+
+  @Post('updateProfile')
+  @ApiBearerAuth()
+  @UseGuards(new AuthGuard())
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'avatar', maxCount: 1 },
+        { name: 'bgImg', maxCount: 1 },
+      ],
+      storage,
+    ),
+  )
+  updateProfile(
+    @UploadedFiles()
+    files: FileUpload,
+    @Body('bio') bio: string,
+    @Session() session: SessionContainer,
+  ) {
+    const userId = session.getUserId();
+    return this.userService.fileUpload(
+      userId,
+      files.avatar[0].filename,
+      files.bgImg[0].filename,
+      bio,
+    );
   }
 
   // @Get('sync')

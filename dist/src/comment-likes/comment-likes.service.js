@@ -19,8 +19,12 @@ let CommentLikesService = class CommentLikesService {
     async create(postId, userId) {
         return `This action creates commentLikes`;
     }
-    findAll() {
-        return `This action returns all commentLikes`;
+    async getCommentLikes(userId) {
+        return await this.prisma.commentLikes.findMany({
+            where: {
+                userId
+            }
+        });
     }
     findOne(id) {
         return `This action returns a #${id} commentLike`;

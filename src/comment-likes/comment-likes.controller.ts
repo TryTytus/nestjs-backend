@@ -37,9 +37,10 @@ export class CommentLikesController {
   }
 
   @Get()
-  @Render('index')
-  findAll() {
-    return { message: 'Hello world!' };
+  @UseGuards(new AuthGuard())
+  getCommentLikes(@Session() session: SessionContainer) {
+    const userId = session.getUserId();
+    return this.commentLikesService.getCommentLikes(userId);
   }
 
   @Get(':id')

@@ -27,8 +27,9 @@ let CommentLikesController = class CommentLikesController {
         const userId = session.getUserId();
         return this.commentLikesService.create(+postId, userId);
     }
-    findAll() {
-        return { message: 'Hello world!' };
+    getCommentLikes(session) {
+        const userId = session.getUserId();
+        return this.commentLikesService.getCommentLikes(userId);
     }
     findOne(id) {
         return this.commentLikesService.findOne(+id);
@@ -52,11 +53,12 @@ __decorate([
 ], CommentLikesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, common_1.Render)('index'),
+    (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
+    __param(0, (0, session_decorator_1.Session)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], CommentLikesController.prototype, "findAll", null);
+], CommentLikesController.prototype, "getCommentLikes", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

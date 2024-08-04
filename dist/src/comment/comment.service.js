@@ -16,6 +16,9 @@ exports.CommentService = exports.Comment = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("mongoose");
 const swagger_1 = require("@nestjs/swagger");
+const prisma_service_1 = require("../prisma.service");
+const mongodb_1 = require("mongodb");
+var _ = require('lodash');
 class Comment {
 }
 exports.Comment = Comment;
@@ -36,9 +39,10 @@ __decorate([
     __metadata("design:type", Array)
 ], Comment.prototype, "comments", void 0);
 let CommentService = class CommentService {
-    constructor(commentModel, postModel) {
+    constructor(commentModel, postModel, prisma) {
         this.commentModel = commentModel;
         this.postModel = postModel;
+        this.prisma = prisma;
     }
     async get(id) {
         return (await this.postModel
@@ -47,18 +51,82 @@ let CommentService = class CommentService {
         })
             .exec()).comments;
     }
-    async getNested() {
-        const _id = '669e65df1fdd5571e92ee1cb';
-        const path = 'comments.0.comments.0';
-        return await this.commentModel.findById(_id).populate(path).exec();
-    }
     async create(createCommentDto, path, postId) {
+        createCommentDto._id = new mongodb_1.ObjectId();
+        const { userId } = createCommentDto;
+        const user = await this.prisma.user.findFirstOrThrow({
+            where: { id: userId },
+        });
+        createCommentDto.name = user.name;
         const updateQuery = {};
         const fullPath = path === '' ? 'comments' : 'comments.' + path;
         updateQuery[fullPath] = createCommentDto;
-        const updatedComment = await this.postModel.updateOne({ postId }, { $push: updateQuery }, { new: true });
+        const updatedComment = await this.postModel.findOneAndUpdate({ postId }, { $push: updateQuery }, { new: true });
         console.log(updatedComment);
+        await this.prisma.post.update({
+            where: { id: Number.parseInt(postId) },
+            data: {
+                commentsCount: { increment: 1 },
+            },
+        });
+        await this.prisma.commentInfo.create({
+            data: {
+                id: createCommentDto._id.toString(),
+                postId: Number.parseInt(postId),
+                userId,
+            },
+        });
         return createCommentDto;
+    }
+    async likeComment(postId, userId, path) {
+        let fullPath = path === '' ? 'comments' : 'comments.' + path;
+        const post = await this.postModel
+            .findOne({
+            postId,
+        })
+            .populate({ path: fullPath });
+        const nestedId = _.get(post, fullPath.split('.').slice(0, -1))._id;
+        fullPath = fullPath.slice(0, -9);
+        const likesPath = fullPath + '.likesCount';
+        const data = {
+            postId: Number.parseInt(postId),
+            userId,
+            commentInfoId: nestedId.toString(),
+        };
+        await this.prisma.commentLikes.create({
+            data
+        });
+        const updatedComment = await this.postModel.findOneAndUpdate({ postId }, { $inc: { [likesPath]: 1 } }, { new: true });
+        if (!updatedComment) {
+            throw new Error('Comment not found');
+        }
+        return updatedComment;
+    }
+    async dislikeComment(postId, userId, path) {
+        let fullPath = path === '' ? 'comments' : 'comments.' + path;
+        const post = await this.postModel
+            .findOne({
+            postId,
+        })
+            .populate({ path: fullPath });
+        const nestedId = _.get(post, fullPath.split('.').slice(0, -1))._id;
+        fullPath = fullPath.slice(0, -9);
+        const likesPath = fullPath + '.likesCount';
+        const data = {
+            postId: Number.parseInt(postId),
+            userId,
+            commentInfoId: nestedId.toString(),
+        };
+        await this.prisma.commentLikes.delete({
+            where: {
+                commentInfoId_postId_userId: data
+            }
+        });
+        const updatedComment = await this.postModel.findOneAndUpdate({ postId }, { $inc: { [likesPath]: -1 } }, { new: true });
+        if (!updatedComment) {
+            throw new Error('Comment not found');
+        }
+        return updatedComment;
     }
 };
 exports.CommentService = CommentService;
@@ -67,6 +135,7 @@ exports.CommentService = CommentService = __decorate([
     __param(0, (0, common_1.Inject)('COMMENT_MODEL')),
     __param(1, (0, common_1.Inject)('POST_MODEL')),
     __metadata("design:paramtypes", [mongoose_1.Model,
-        mongoose_1.Model])
+        mongoose_1.Model,
+        prisma_service_1.PrismaService])
 ], CommentService);
 //# sourceMappingURL=comment.service.js.map

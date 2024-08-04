@@ -31,13 +31,27 @@ let PostService = class PostService {
         this.search.posts.addDocuments([{ id: post.id, content: post.content }]);
         return post;
     }
-    async findAll(skip, take, userId) {
+    async findAll(skip, take, userId, orderBy, order) {
         const posts = await this.prisma.post.findMany({
             include: {
                 user: true,
             },
             skip,
             take,
+            orderBy: {
+                [orderBy]: order
+            }
+        });
+        const postIds = posts.map((post) => post.id);
+        await this.prisma.post.updateMany({
+            where: {
+                id: {
+                    in: postIds,
+                },
+            },
+            data: {
+                viewsCont: { increment: 1 },
+            },
         });
         if (userId === undefined)
             return posts;
@@ -45,27 +59,41 @@ let PostService = class PostService {
             where: { userId },
             select: { postId: true },
         });
+        const bookmarkedPosts = await this.prisma.bookmark.findMany({
+            where: { userId },
+            select: { postId: true },
+        });
         const likedPostsIds = new Set(likedPosts.map((like) => like.postId));
+        const bookmarkedIds = new Set(bookmarkedPosts.map((like) => like.postId));
         const postsWithIsLiked = posts.map((post) => ({
             ...post,
             isLiked: likedPostsIds.has(post.id),
+            isBookmarked: bookmarkedIds.has(post.id),
         }));
         return postsWithIsLiked;
     }
     async findOne(id, userId) {
-        const post = await this.prisma.post.findFirstOrThrow({
+        const post = await this.prisma.post.update({
             where: { id },
             include: {
                 user: true,
             },
+            data: {
+                viewsCont: { increment: 1 },
+            },
         });
+        post;
         if (userId === undefined)
             return post;
         const isLiked = null !==
             (await this.prisma.postLikes.findFirst({
                 where: { userId, postId: id },
             }));
-        return { ...post, isLiked };
+        const isBookmarked = null !==
+            (await this.prisma.bookmark.findFirst({
+                where: { userId, postId: id },
+            }));
+        return { ...post, isLiked, isBookmarked };
     }
     async update(id, updatePostDto) {
         return await this.prisma.post.update({

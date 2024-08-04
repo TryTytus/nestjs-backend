@@ -25,13 +25,28 @@ export class PostService {
     return post;
   }
 
-  async findAll(skip: number, take: number, userId?: string): Promise<Post[]> {
+  async findAll(skip: number, take: number, userId: string, orderBy: string, order: string): Promise<Post[]> {
     const posts = await this.prisma.post.findMany({
       include: {
         user: true,
       },
       skip,
       take,
+      orderBy: {
+        [orderBy]: order
+      }
+    });
+
+    const postIds = posts.map((post) => post.id);
+    await this.prisma.post.updateMany({
+      where: {
+        id: {
+          in: postIds,
+        },
+      },
+      data: {
+        viewsCont: { increment: 1 },
+      },
     });
 
     if (userId === undefined) return posts;
@@ -42,23 +57,35 @@ export class PostService {
       select: { postId: true },
     });
 
-    const likedPostsIds = new Set(likedPosts.map((like) => like.postId));
+    const bookmarkedPosts = await this.prisma.bookmark.findMany({
+      where: { userId },
+      select: { postId: true },
+    });
 
+    const likedPostsIds = new Set(likedPosts.map((like) => like.postId));
+    const bookmarkedIds = new Set(bookmarkedPosts.map((like) => like.postId));
+    
     const postsWithIsLiked = posts.map((post) => ({
       ...post,
       isLiked: likedPostsIds.has(post.id),
+      isBookmarked: bookmarkedIds.has(post.id),
     }));
 
     return postsWithIsLiked;
   }
 
   async findOne(id: number, userId?: string): Promise<Post> {
-    const post = await this.prisma.post.findFirstOrThrow({
+    const post = await this.prisma.post.update({
       where: { id },
       include: {
         user: true,
       },
+      data: {
+        viewsCont: { increment: 1 },
+      },
     });
+
+    post;
 
     if (userId === undefined) return post;
 
@@ -68,7 +95,13 @@ export class PostService {
         where: { userId, postId: id },
       }));
 
-    return { ...post, isLiked };
+    const isBookmarked =
+      null !==
+      (await this.prisma.bookmark.findFirst({
+        where: { userId, postId: id },
+      }));
+
+    return { ...post, isLiked, isBookmarked };
   }
 
   async update(

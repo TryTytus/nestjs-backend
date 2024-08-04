@@ -20,6 +20,10 @@ const update_user_dto_1 = require("./dto/update-user.dto");
 const auth_guard_1 = require("../auth/auth.guard");
 const session_decorator_1 = require("../auth/session/session.decorator");
 const swagger_1 = require("@nestjs/swagger");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
+const storage_1 = require("../storage");
+const file_upload_dto_1 = require("./dto/file-upload.dto");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -41,6 +45,13 @@ let UserController = class UserController {
     remove(session) {
         const userId = session.getUserId();
         return this.userService.remove(userId);
+    }
+    uploadFile(file) {
+        return 'file uploaded';
+    }
+    updateProfile(files, bio, session) {
+        const userId = session.getUserId();
+        return this.userService.fileUpload(userId, files.avatar[0].filename, files.bgImg[0].filename, bio);
     }
 };
 exports.UserController = UserController;
@@ -86,6 +97,36 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Post)('upload'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
+        storage: (0, multer_1.diskStorage)({
+            destination: './public',
+            filename: (req, file, callback) => {
+                callback(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}.${file.originalname.split('.').pop()}`);
+            },
+        }),
+    })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "uploadFile", null);
+__decorate([
+    (0, common_1.Post)('updateProfile'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
+        { name: 'avatar', maxCount: 1 },
+        { name: 'bgImg', maxCount: 1 },
+    ], storage_1.storage)),
+    __param(0, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.Body)('bio')),
+    __param(2, (0, session_decorator_1.Session)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [file_upload_dto_1.FileUpload, String, Object]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "updateProfile", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     (0, swagger_1.ApiTags)('user'),

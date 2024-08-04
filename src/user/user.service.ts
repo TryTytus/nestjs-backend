@@ -53,6 +53,17 @@ export class UserService {
     return user;
   }
 
+  async fileUpload(userId: string, avatar: string, bgImg: string, bio: string): Promise<User> {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        avatar,
+        bgimg: bgImg,
+        bio,
+      },
+    });
+  }
+
   async sync() {
     // const users = (await this.prisma.user.findMany()).map(
     //   (user) => ({ ...user }) as UserSearchable,

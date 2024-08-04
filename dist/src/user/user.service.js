@@ -46,6 +46,16 @@ let UserService = class UserService {
         await this.search.users.deleteDocument(id);
         return user;
     }
+    async fileUpload(userId, avatar, bgImg, bio) {
+        return await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                avatar,
+                bgimg: bgImg,
+                bio,
+            },
+        });
+    }
     async sync() {
         const posts = (await this.prisma.post.findMany()).map((post) => ({ ...post }));
         await this.search.posts.addDocuments(posts);

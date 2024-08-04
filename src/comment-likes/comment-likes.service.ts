@@ -11,10 +11,13 @@ export class CommentLikesService {
     return `This action creates commentLikes`
   }
 
-  findAll() {
-    return `This action returns all commentLikes`;
-  }
-
+  async getCommentLikes(userId: string) {
+    return await this.prisma.commentLikes.findMany({
+      where: {
+        userId
+      }
+    })
+   }
   findOne(id: number) {
     return `This action returns a #${id} commentLike`;
   }

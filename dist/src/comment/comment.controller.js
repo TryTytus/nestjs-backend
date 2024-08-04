@@ -45,12 +45,17 @@ let CommentController = class CommentController {
     async get(id) {
         return await this.commentService.get(+id);
     }
-    async getNested() {
-        return this.commentService.getNested();
-    }
     create(createCommentDto, path = '', postId, session) {
         createCommentDto.userId = session.getUserId();
         return this.commentService.create(createCommentDto, path, postId);
+    }
+    like(path = '', postId, session) {
+        const userId = session.getUserId();
+        return this.commentService.likeComment(postId, userId, path);
+    }
+    dislike(path = '', postId, session) {
+        const userId = session.getUserId();
+        return this.commentService.dislikeComment(postId, userId, path);
     }
 };
 exports.CommentController = CommentController;
@@ -63,12 +68,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CommentController.prototype, "get", null);
 __decorate([
-    (0, common_1.Get)('/nested'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], CommentController.prototype, "getNested", null);
-__decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
     (0, swagger_1.ApiQuery)({ name: 'path', required: false, type: String }),
@@ -80,6 +79,28 @@ __decorate([
     __metadata("design:paramtypes", [create_comment_dto_1.CreateCommentDto, String, String, Object]),
     __metadata("design:returntype", void 0)
 ], CommentController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)('like'),
+    (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
+    (0, swagger_1.ApiQuery)({ name: 'path', required: false, type: String }),
+    __param(0, (0, common_1.Query)('path')),
+    __param(1, (0, common_1.Query)('postId')),
+    __param(2, (0, common_1.Session)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", void 0)
+], CommentController.prototype, "like", null);
+__decorate([
+    (0, common_1.Post)('dislike'),
+    (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
+    (0, swagger_1.ApiQuery)({ name: 'path', required: false, type: String }),
+    __param(0, (0, common_1.Query)('path')),
+    __param(1, (0, common_1.Query)('postId')),
+    __param(2, (0, common_1.Session)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", void 0)
+], CommentController.prototype, "dislike", null);
 exports.CommentController = CommentController = __decorate([
     (0, common_1.Controller)('comment'),
     (0, swagger_1.ApiTags)('comment'),

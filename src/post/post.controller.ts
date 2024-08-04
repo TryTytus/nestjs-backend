@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dto/create-post.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { SessionContainer } from 'supertokens-node/recipe/session';
@@ -32,17 +32,22 @@ export class PostController {
     return await this.postService.create(createPostDto);
   }
 
+
   @Get()
   @ApiBearerAuth()
   @UseGuards(new AuthGuard())
+  @ApiQuery({name: 'orderBy', required: false,  type: String})
+  @ApiQuery({name: 'order', required: false,  type: String})
   findAll(
     @Query('skip') skip = '0',
     @Query('take') take = '15',
+    @Query('orderBy') orderBy = 'createdAt',
+    @Query('order') order: 'desc' | 'asc' = 'desc',
     @Session() session?: SessionContainer,
   ) {
     let userId;
     if (session !== undefined) userId = session.getUserId();
-    return this.postService.findAll(+skip, +take, userId);
+    return this.postService.findAll(+skip, +take, userId, orderBy, order);
   }
 
   @Get(':id')

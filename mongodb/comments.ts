@@ -4,6 +4,7 @@ import { Document } from 'mongoose';
 export const CommentSchema = new mongoose.Schema({
   content: String,
   userId: String,
+  likesCount: Number, 
   name: String,
 });
 
@@ -19,6 +20,7 @@ export const PostSchema = new mongoose.Schema({
 export interface CommentDoc extends Document {
   content: string;
   userId: string;
+  likesCount?: Number, 
   name: string;
   comments: CommentDoc[];
 }

@@ -28,11 +28,11 @@ let PostController = class PostController {
         createPostDto.userId = session.getUserId();
         return await this.postService.create(createPostDto);
     }
-    findAll(skip = '0', take = '15', session) {
+    findAll(skip = '0', take = '15', orderBy = 'createdAt', order = 'desc', session) {
         let userId;
         if (session !== undefined)
             userId = session.getUserId();
-        return this.postService.findAll(+skip, +take, userId);
+        return this.postService.findAll(+skip, +take, userId, orderBy, order);
     }
     findOne(id, session) {
         let userId;
@@ -64,11 +64,15 @@ __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
+    (0, swagger_1.ApiQuery)({ name: 'orderBy', required: false, type: String }),
+    (0, swagger_1.ApiQuery)({ name: 'order', required: false, type: String }),
     __param(0, (0, common_1.Query)('skip')),
     __param(1, (0, common_1.Query)('take')),
-    __param(2, (0, session_decorator_1.Session)()),
+    __param(2, (0, common_1.Query)('orderBy')),
+    __param(3, (0, common_1.Query)('order')),
+    __param(4, (0, session_decorator_1.Session)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:paramtypes", [Object, Object, Object, String, Object]),
     __metadata("design:returntype", void 0)
 ], PostController.prototype, "findAll", null);
 __decorate([

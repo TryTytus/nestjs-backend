@@ -11,9 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateCommentDto = void 0;
 const class_validator_1 = require("class-validator");
+const mongodb_1 = require("mongodb");
 class CreateCommentDto {
 }
 exports.CreateCommentDto = CreateCommentDto;
+__decorate([
+    (0, class_validator_1.IsEmpty)(),
+    __metadata("design:type", mongodb_1.ObjectId)
+], CreateCommentDto.prototype, "_id", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
@@ -23,7 +28,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateCommentDto.prototype, "userId", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEmpty)(),
     __metadata("design:type", String)
 ], CreateCommentDto.prototype, "name", void 0);
 __decorate([

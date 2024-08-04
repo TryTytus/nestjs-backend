@@ -5,9 +5,11 @@ export declare class CommentLikesController {
     private readonly commentLikesService;
     constructor(commentLikesService: CommentLikesService);
     create(postId: string, session: SessionContainer): Promise<string>;
-    findAll(): {
-        message: string;
-    };
+    getCommentLikes(session: SessionContainer): Promise<{
+        commentInfoId: string;
+        postId: number;
+        userId: string;
+    }[]>;
     findOne(id: string): string;
     update(id: string, updateCommentLikeDto: UpdateCommentLikeDto): string;
     remove(id: string): string;

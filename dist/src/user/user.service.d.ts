@@ -12,5 +12,6 @@ export declare class UserService {
     findOne(id: string): Promise<User | null>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<User>;
     remove(id: string): Promise<User>;
+    fileUpload(userId: string, avatar: string, bgImg: string, bio: string): Promise<User>;
     sync(): Promise<void>;
 }

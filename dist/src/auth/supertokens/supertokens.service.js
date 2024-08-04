@@ -47,7 +47,9 @@ let SupertokensService = class SupertokensService {
                         ],
                     },
                 }),
-                session_1.default.init(),
+                session_1.default.init({
+                    exposeAccessTokenToFrontendInCookieBasedAuth: true
+                }),
             ],
         });
     }

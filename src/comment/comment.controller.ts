@@ -44,11 +44,6 @@ export class CommentController {
     return await this.commentService.get(+id);
   }
 
-  @Get('/nested')
-  async getNested(): Promise<Comment> {
-    return this.commentService.getNested();
-  }
-
   @Post()
   @UseGuards(new AuthGuard())
   @ApiQuery({ name: 'path', required: false, type: String })
@@ -61,4 +56,33 @@ export class CommentController {
     createCommentDto.userId = session.getUserId();
     return this.commentService.create(createCommentDto, path, postId);
   }
+
+  @Post('like')
+  @UseGuards(new AuthGuard())
+  @ApiQuery({ name: 'path', required: false, type: String })
+  like(
+    @Query('path') path: string = '',
+    @Query('postId') postId: string,
+    @Session() session: SessionContainer,
+  ) {
+    const userId = session.getUserId();
+    return this.commentService.likeComment(postId, userId, path)
+  }
+
+  @Post('dislike')
+  @UseGuards(new AuthGuard())
+  @ApiQuery({ name: 'path', required: false, type: String })
+  dislike(
+    @Query('path') path: string = '',
+    @Query('postId') postId: string,
+    @Session() session: SessionContainer,
+  ) {
+    const userId = session.getUserId();
+    return this.commentService.dislikeComment(postId, userId, path)
+  }
+
+
+
+
+
 }

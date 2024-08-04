@@ -4,7 +4,11 @@ export declare class CommentLikesService {
     private prisma;
     constructor(prisma: PrismaService);
     create(postId: number, userId: string): Promise<string>;
-    findAll(): string;
+    getCommentLikes(userId: string): Promise<{
+        commentInfoId: string;
+        postId: number;
+        userId: string;
+    }[]>;
     findOne(id: number): string;
     update(id: number, updateCommentLikeDto: UpdateCommentLikeDto): string;
     remove(id: number): string;

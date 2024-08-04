@@ -19,6 +19,7 @@ const comment_likes_module_1 = require("./comment-likes/comment-likes.module");
 const events_gateway_1 = require("./events/events.gateway");
 const search_service_1 = require("./search.service");
 const post_likes_module_1 = require("./post-likes/post-likes.module");
+const bookmark_module_1 = require("./bookmark/bookmark.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -40,6 +41,7 @@ exports.AppModule = AppModule = __decorate([
             comment_module_1.CommentModule,
             comment_likes_module_1.CommentLikesModule,
             post_likes_module_1.PostLikesModule,
+            bookmark_module_1.BookmarkModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, prisma_service_1.PrismaService, events_gateway_1.EventsGateway, search_service_1.SearchService],

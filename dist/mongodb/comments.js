@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 exports.CommentSchema = new mongoose.Schema({
     content: String,
     userId: String,
+    likesCount: Number,
     name: String,
 });
 exports.CommentSchema.add({

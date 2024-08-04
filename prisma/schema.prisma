@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,37 +8,72 @@ datasource db {
 }
 
 model User {
-  id        String   @id @unique @db.Char(36)
-  name      String   @db.VarChar(20)
-  nickname  String   @unique @db.VarChar(20)
-  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  id           String         @id @unique @db.Char(36)
+  name         String         @db.VarChar(20)
+  nickname     String         @unique @db.VarChar(20)
+  createdAt    DateTime       @default(now()) @db.Timestamptz(3)
+  bio          String?        @db.VarChar(255)
+  avatar       String?        @db.VarChar(255)
+  bgimg        String?        @db.VarChar(255)
 
+  Bookmark     Bookmark[]
+  CommentInfo  CommentInfo[]
+  CommentLikes CommentLikes[]
   posts        Post[]
   PostLikes    PostLikes[]
 }
 
 model Post {
-  id            Int      @id @default(autoincrement())
-  content       String   @db.VarChar(280)
-  likesCount    Int      @default(0)
-  viewsCont     Int      @default(0)
-  commentsCount Int      @default(0)
-  createdAt     DateTime @default(now()) @db.Timestamptz(3)
-  updatedAt     DateTime @default(now()) @updatedAt @db.Timestamptz(3)
-
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String         @db.Char(36)
-
-  PostLikes    PostLikes[]
+  id            Int            @id @default(autoincrement())
+  content       String         @db.VarChar(280)
+  likesCount    Int            @default(0)
+  viewsCont     Int            @default(0)
+  commentsCount Int            @default(0)
+  createdAt     DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime       @default(now()) @updatedAt @db.Timestamptz(3)
+  userId        String         @db.Char(36)
+  
+  Bookmark      Bookmark[]
+  CommentInfo   CommentInfo[]
+  CommentLikes  CommentLikes[]
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  PostLikes     PostLikes[]
 }
 
-
-
 model PostLikes {
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId Int
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @db.Char(36)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([postId, userId])
+}
+
+model Bookmark {
+  postId Int
+  userId String @db.Char(36)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+}
+
+model CommentInfo {
+  id           String         @id @db.Char(36)
+  postId       Int
+  userId       String         @db.Char(36)
+  post         Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  CommentLikes CommentLikes[]
+}
+
+model CommentLikes {
+  commentInfoId String      @db.Char(36)
+  postId        Int
+  userId        String      @db.Char(36)
+  commentInfo   CommentInfo @relation(fields: [commentInfoId], references: [id], onDelete: Cascade)
+  post          Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([commentInfoId, postId, userId])
 }

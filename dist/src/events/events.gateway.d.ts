@@ -2,6 +2,7 @@ import { OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit } from '@nestjs
 import { Server, Socket } from 'socket.io';
 type CustomSocket = Socket & {
     username: string;
+    nickname: string;
 };
 export declare class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     server: Server;

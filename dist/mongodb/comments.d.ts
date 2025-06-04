@@ -5,16 +5,19 @@ export declare const CommentSchema: mongoose.Schema<any, mongoose.Model<any, any
     userId?: string;
     likesCount?: number;
     name?: string;
+    bgimg?: string;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     content?: string;
     userId?: string;
     likesCount?: number;
     name?: string;
+    bgimg?: string;
 }>> & mongoose.FlatRecord<{
     content?: string;
     userId?: string;
     likesCount?: number;
     name?: string;
+    bgimg?: string;
 }> & {
     _id: mongoose.Types.ObjectId;
 }>;
@@ -24,6 +27,7 @@ export declare const PostSchema: mongoose.Schema<any, mongoose.Model<any, any, a
         userId?: string;
         likesCount?: number;
         name?: string;
+        bgimg?: string;
     }>;
     postId?: number;
 }, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
@@ -32,6 +36,7 @@ export declare const PostSchema: mongoose.Schema<any, mongoose.Model<any, any, a
         userId?: string;
         likesCount?: number;
         name?: string;
+        bgimg?: string;
     }>;
     postId?: number;
 }>> & mongoose.FlatRecord<{
@@ -40,6 +45,7 @@ export declare const PostSchema: mongoose.Schema<any, mongoose.Model<any, any, a
         userId?: string;
         likesCount?: number;
         name?: string;
+        bgimg?: string;
     }>;
     postId?: number;
 }> & {
@@ -50,6 +56,7 @@ export interface CommentDoc extends Document {
     userId: string;
     likesCount?: Number;
     name: string;
+    bgimg?: string;
     comments: CommentDoc[];
 }
 export interface PostDoc extends Document {

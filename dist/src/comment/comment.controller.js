@@ -35,6 +35,10 @@ __decorate([
     __metadata("design:type", String)
 ], Comment.prototype, "name", void 0);
 __decorate([
+    (0, swagger_2.ApiProperty)(),
+    __metadata("design:type", String)
+], Comment.prototype, "bgimg", void 0);
+__decorate([
     (0, swagger_2.ApiProperty)({ type: [Comment] }),
     __metadata("design:type", Array)
 ], Comment.prototype, "comments", void 0);

@@ -7,6 +7,7 @@ export declare const postProviders: {
             userId?: string;
             likesCount?: number;
             name?: string;
+            bgimg?: string;
         }>;
         postId?: number;
     }, {}, {}, {}, import("mongoose").Document<unknown, {}, {
@@ -15,6 +16,7 @@ export declare const postProviders: {
             userId?: string;
             likesCount?: number;
             name?: string;
+            bgimg?: string;
         }>;
         postId?: number;
     }> & {
@@ -23,6 +25,7 @@ export declare const postProviders: {
             userId?: string;
             likesCount?: number;
             name?: string;
+            bgimg?: string;
         }>;
         postId?: number;
     } & {
@@ -33,6 +36,7 @@ export declare const postProviders: {
             userId?: string;
             likesCount?: number;
             name?: string;
+            bgimg?: string;
         }>;
         postId?: number;
     }, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<{
@@ -41,6 +45,7 @@ export declare const postProviders: {
             userId?: string;
             likesCount?: number;
             name?: string;
+            bgimg?: string;
         }>;
         postId?: number;
     }>> & import("mongoose").FlatRecord<{
@@ -49,6 +54,7 @@ export declare const postProviders: {
             userId?: string;
             likesCount?: number;
             name?: string;
+            bgimg?: string;
         }>;
         postId?: number;
     }> & {

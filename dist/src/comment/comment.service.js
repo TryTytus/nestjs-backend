@@ -58,6 +58,7 @@ let CommentService = class CommentService {
             where: { id: userId },
         });
         createCommentDto.name = user.name;
+        createCommentDto.bgimg = user.avatar;
         const updateQuery = {};
         const fullPath = path === '' ? 'comments' : 'comments.' + path;
         updateQuery[fullPath] = createCommentDto;

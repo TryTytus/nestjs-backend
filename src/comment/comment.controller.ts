@@ -29,6 +29,8 @@ export class Comment {
   userId: string;
   @ApiProperty()
   name: string;
+  @ApiProperty()
+  bgimg?: string;
   @ApiProperty({ type: [Comment] })
   comments: Comment[];
 }

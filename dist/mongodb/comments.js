@@ -7,6 +7,7 @@ exports.CommentSchema = new mongoose.Schema({
     userId: String,
     likesCount: Number,
     name: String,
+    bgimg: String,
 });
 exports.CommentSchema.add({
     comments: [exports.CommentSchema],

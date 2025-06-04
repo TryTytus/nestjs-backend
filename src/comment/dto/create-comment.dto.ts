@@ -16,6 +16,9 @@ export class CreateCommentDto implements Partial<CommentDoc> {
   @IsEmpty()
   name?: string;
 
+  @IsString()
+  bgimg?: string;
+
   @IsEmpty()
   comments?: CommentDoc[];
 }

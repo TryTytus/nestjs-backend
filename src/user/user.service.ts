@@ -32,8 +32,8 @@ export class UserService {
     return await this.prisma.user.findMany();
   }
 
-  async findOne(id: string): Promise<User | null> {
-    return await this.prisma.user.findFirstOrThrow({ where: { id } });
+  async findByNickname(nickname: string): Promise<User | null> {
+    return await this.prisma.user.findFirstOrThrow({ where: { nickname } });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

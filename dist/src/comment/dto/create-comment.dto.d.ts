@@ -5,5 +5,6 @@ export declare class CreateCommentDto implements Partial<CommentDoc> {
     content?: string;
     userId?: string;
     name?: string;
+    bgimg?: string;
     comments?: CommentDoc[];
 }

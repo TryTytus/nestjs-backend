@@ -52,6 +52,7 @@ export class CommentService {
     });
 
     createCommentDto.name = user.name;
+    createCommentDto.bgimg = user.avatar;
 
     const updateQuery = {};
 

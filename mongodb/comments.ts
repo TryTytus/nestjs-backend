@@ -6,6 +6,7 @@ export const CommentSchema = new mongoose.Schema({
   userId: String,
   likesCount: Number, 
   name: String,
+  bgimg: String,
 });
 
 CommentSchema.add({
@@ -22,6 +23,7 @@ export interface CommentDoc extends Document {
   userId: string;
   likesCount?: Number, 
   name: string;
+  bgimg?: string;
   comments: CommentDoc[];
 }
 

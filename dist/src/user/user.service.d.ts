@@ -9,7 +9,7 @@ export declare class UserService {
     constructor(prisma: PrismaService, search: SearchService);
     create(createUserDto: CreateUserDto): Promise<User>;
     findAll(): Promise<User[]>;
-    findOne(id: string): Promise<User | null>;
+    findByNickname(nickname: string): Promise<User | null>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<User>;
     remove(id: string): Promise<User>;
     fileUpload(userId: string, avatar: string, bgImg: string, bio: string): Promise<User>;

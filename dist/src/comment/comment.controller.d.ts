@@ -5,6 +5,7 @@ export declare class Comment {
     content: string;
     userId: string;
     name: string;
+    bgimg?: string;
     comments: Comment[];
 }
 export declare class CommentController {

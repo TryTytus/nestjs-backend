@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateCommentDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEmpty)(),
     __metadata("design:type", String)
 ], CreateCommentDto.prototype, "bgimg", void 0);
 __decorate([

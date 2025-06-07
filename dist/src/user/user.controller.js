@@ -36,7 +36,10 @@ let UserController = class UserController {
         return this.userService.findAll();
     }
     findOne(id) {
-        return this.userService.findByNickname(id);
+        return this.userService.findById(id);
+    }
+    findByNickname(nickname) {
+        return this.userService.findByNickname(nickname);
     }
     update(updateUserDto, session) {
         const userId = session.getUserId();
@@ -72,12 +75,19 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':nickname'),
-    __param(0, (0, common_1.Param)('nickname')),
+    (0, common_1.Get)('byId/:id'),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)('byNickname/:nickname'),
+    __param(0, (0, common_1.Param)('nickname')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "findByNickname", null);
 __decorate([
     (0, common_1.Patch)(),
     (0, swagger_1.ApiBearerAuth)(),

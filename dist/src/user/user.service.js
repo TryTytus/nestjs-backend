@@ -30,8 +30,13 @@ let UserService = class UserService {
     async findAll() {
         return await this.prisma.user.findMany();
     }
+    async findById(id) {
+        return await this.prisma.user.findFirstOrThrow({ where: { id } });
+    }
     async findByNickname(nickname) {
-        return await this.prisma.user.findFirstOrThrow({ where: { nickname } });
+        return await this.prisma.user.findFirst({
+            where: { nickname },
+        });
     }
     async update(id, updateUserDto) {
         return await this.prisma.user.update({

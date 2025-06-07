@@ -63,6 +63,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(new auth_guard_1.AuthGuard()),
     (0, swagger_1.ApiQuery)({ name: 'orderBy', required: false, type: String }),
     (0, swagger_1.ApiQuery)({ name: 'order', required: false, type: String }),
     __param(0, (0, common_1.Query)('skip')),

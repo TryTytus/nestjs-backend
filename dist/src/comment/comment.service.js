@@ -36,6 +36,10 @@ __decorate([
 ], Comment.prototype, "name", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], Comment.prototype, "bgimg", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], Comment.prototype, "comments", void 0);
 let CommentService = class CommentService {

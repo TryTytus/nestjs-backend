@@ -33,6 +33,15 @@ export declare class UserController {
         avatar: string | null;
         bgimg: string | null;
     }>;
+    findByNickname(nickname: string): Promise<{
+        id: string;
+        name: string;
+        nickname: string;
+        createdAt: Date;
+        bio: string | null;
+        avatar: string | null;
+        bgimg: string | null;
+    }>;
     update(updateUserDto: UpdateUserDto, session: SessionContainer): Promise<{
         id: string;
         name: string;

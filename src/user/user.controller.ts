@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -51,9 +52,14 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':nickname')
-  findOne(@Param('nickname') id: string) {
-    return this.userService.findByNickname(id);
+  @Get('byId/:id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findById(id);
+  }
+
+  @Get('byNickname/:nickname')
+  findByNickname(@Param('nickname') nickname: string) {
+    return this.userService.findByNickname(nickname);
   }
 
   @Patch()

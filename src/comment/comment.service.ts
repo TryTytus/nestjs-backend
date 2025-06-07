@@ -16,6 +16,8 @@ export class Comment {
   @ApiProperty()
   name: string;
   @ApiProperty()
+  bgimg?: string;
+  @ApiProperty()
   comments: Comment[];
 }
 

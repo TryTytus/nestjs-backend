@@ -10,7 +10,7 @@ const prisma_client_exception_filter_1 = require("./prisma-client-exception/pris
 const openapi_1 = require("./openapi");
 const path_1 = require("path");
 async function bootstrap() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, {});
     app.useStaticAssets((0, path_1.join)(__dirname, '..', '..', 'public'));
     app.setBaseViewsDir((0, path_1.join)(__dirname, '..', '..', 'views'));
     app.setViewEngine('hbs');

@@ -35,7 +35,7 @@ export class PostController {
 
   @Get()
   @ApiBearerAuth()
-  // @UseGuards(new AuthGuard())
+  @UseGuards(new AuthGuard())
   @ApiQuery({name: 'orderBy', required: false,  type: String})
   @ApiQuery({name: 'order', required: false,  type: String})
   findAll(

@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
+const node_fs_1 = require("node:fs");
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma.service");
 const search_service_1 = require("../search.service");
@@ -38,6 +39,14 @@ let UserService = class UserService {
             where: { nickname },
         });
     }
+    async findUserPosts(nickname) {
+        return await this.prisma.post.findMany({
+            where: { user: { nickname } },
+            include: {
+                user: true,
+            }
+        });
+    }
     async update(id, updateUserDto) {
         return await this.prisma.user.update({
             data: updateUserDto,
@@ -52,11 +61,40 @@ let UserService = class UserService {
         return user;
     }
     async fileUpload(userId, avatar, bgImg, bio) {
+        const user = await this.findById(userId);
+        const oldAvatar = user.avatar;
+        const oldBgImg = user.bgimg;
+        if (oldAvatar) {
+            try {
+                await node_fs_1.promises.unlink('./public/' + oldAvatar);
+            }
+            catch (error) {
+                console.error('Error removing old avatar:', error);
+            }
+        }
+        if (oldBgImg) {
+            try {
+                await node_fs_1.promises.unlink('./public/' + oldBgImg);
+            }
+            catch (error) {
+                console.error('Error removing old background image:', error);
+            }
+        }
+        if (oldAvatar)
+            await node_fs_1.promises.rename('./public/' + avatar, './public/' + oldAvatar);
+        if (oldBgImg)
+            await node_fs_1.promises.rename('./public/' + bgImg, './public/' + oldBgImg);
+        const newAvatar = (oldAvatar) ? oldAvatar : avatar;
+        const newBgImg = (oldBgImg) ? oldBgImg : bgImg;
+        await this.search.users.deleteDocument(userId);
+        await this.search.users.addDocuments([
+            { id: userId, name: user.name, nickname: user.nickname, avatar: newAvatar },
+        ]);
         return await this.prisma.user.update({
             where: { id: userId },
             data: {
-                avatar,
-                bgimg: bgImg,
+                avatar: (oldAvatar) ? oldAvatar : avatar,
+                bgimg: (oldBgImg) ? oldBgImg : bgImg,
                 bio,
             },
         });

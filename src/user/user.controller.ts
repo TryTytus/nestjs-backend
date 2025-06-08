@@ -1,3 +1,5 @@
+
+
 import {
   Controller,
   Get,
@@ -50,6 +52,11 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('posts/:nickname')
+  findUserPosts(@Param('nickname') userId: string) {
+    return this.userService.findUserPosts(userId);
   }
 
   @Get('byId/:id')
@@ -111,13 +118,14 @@ export class UserController {
       storage,
     ),
   )
-  updateProfile(
+  async updateProfile(
     @UploadedFiles()
     files: FileUpload,
     @Body('bio') bio: string,
     @Session() session: SessionContainer,
   ) {
     const userId = session.getUserId();
+
     return this.userService.fileUpload(
       userId,
       files.avatar[0].filename,
@@ -126,8 +134,10 @@ export class UserController {
     );
   }
 
-  // @Get('sync')
-  // sync() {
-  //   return this.userService.sync();
-  // }
+
+  @Get('sync')
+  async sync() {
+    return this.userService.sync();
+  }
+
 }

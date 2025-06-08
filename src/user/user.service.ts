@@ -1,3 +1,7 @@
+import Fs from 'node:fs'
+
+import { promises } from 'node:fs';
+
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,6 +12,7 @@ import {
   SearchService,
   UserSearchable,
 } from 'src/search.service';
+import { Post } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -20,6 +25,7 @@ export class UserService {
     const user = await this.prisma.user.create({
       data: createUserDto,
     });
+    
 
     await this.search.users.addDocuments([
       { id: user.id, name: user.name, nickname: user.nickname },
@@ -42,6 +48,15 @@ export class UserService {
     });
   }
 
+  async findUserPosts(nickname: string): Promise<Post[]> {
+    return await this.prisma.post.findMany({
+      where: { user: { nickname } },
+      include: {
+        user: true,
+      }
+    });
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     return await this.prisma.user.update({
       data: updateUserDto,
@@ -60,11 +75,46 @@ export class UserService {
   }
 
   async fileUpload(userId: string, avatar: string, bgImg: string, bio: string): Promise<User> {
+    const user = await this.findById(userId);
+
+    const oldAvatar = user.avatar;
+    const oldBgImg = user.bgimg;
+
+    if (oldAvatar) {
+      try {
+        await promises.unlink('./public/' + oldAvatar);
+      } catch (error) {
+        console.error('Error removing old avatar:', error);
+      }
+    }
+
+    if (oldBgImg) {
+      try {
+        await promises.unlink('./public/' + oldBgImg);
+      } catch (error) {
+        console.error('Error removing old background image:', error);
+      }
+    }
+    if (oldAvatar)
+      await promises.rename('./public/' + avatar, './public/' + oldAvatar);
+    if (oldBgImg)
+      await promises.rename('./public/' + bgImg, './public/' + oldBgImg);
+
+    
+
+    const newAvatar =  (oldAvatar) ? oldAvatar : avatar;
+    const newBgImg = (oldBgImg) ? oldBgImg : bgImg;
+
+    await this.search.users.deleteDocument(userId);
+    await this.search.users.addDocuments([
+      { id: userId, name: user.name, nickname: user.nickname, avatar: newAvatar },
+    ]);
+
     return await this.prisma.user.update({
       where: { id: userId },
       data: {
-        avatar,
-        bgimg: bgImg,
+        avatar: (oldAvatar) ? oldAvatar : avatar,
+        bgimg: (oldBgImg) ? oldBgImg : bgImg,
         bio,
       },
     });
@@ -78,6 +128,8 @@ export class UserService {
     const posts = (await this.prisma.post.findMany()).map(
       (post) => ({ ...post }) as PostSearchable,
     );
+
+
 
     // await this.search.users.addDocuments(users);
     await this.search.posts.addDocuments(posts);

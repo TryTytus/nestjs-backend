@@ -28,7 +28,7 @@ let PostService = class PostService {
             data: createPostDto,
         });
         await this.postModel.create({ postId: post.id });
-        this.search.posts.addDocuments([{ id: post.id, content: post.content }]);
+        await this.search.posts.addDocuments([post]);
         return post;
     }
     async findAll(skip, take, userId, orderBy, order) {

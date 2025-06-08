@@ -10,6 +10,7 @@ export type UserSearchable = {
   id: string;
   name: string;
   nickname: string;
+  avatar?: string;
 }
 
 @Injectable()
@@ -43,6 +44,7 @@ export class SearchService extends Meilisearch implements OnModuleInit {
       { id: 5, title: 'Moana', genres: ['Fantasy', 'Action'] },
       { id: 6, title: 'Philadelphia', genres: ['Drama'] },
     ];
+
 
     // If the index 'movies' does not exist, Meilisearch creates it when you first add the documents.
     let response = await index.addDocuments(documents);

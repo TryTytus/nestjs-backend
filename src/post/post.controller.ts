@@ -66,7 +66,7 @@ export class PostController {
   }
 
   @Delete(':id')
-  @UseGuards(new AuthGuard())
+  // @UseGuards(new AuthGuard())
   remove(@Param('id') id: string) {
     return this.postService.remove(+id);
   }

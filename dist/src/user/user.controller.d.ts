@@ -24,6 +24,16 @@ export declare class UserController {
         avatar: string | null;
         bgimg: string | null;
     }[]>;
+    findUserPosts(userId: string): Promise<{
+        id: number;
+        content: string;
+        likesCount: number;
+        viewsCont: number;
+        commentsCount: number;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
+    }[]>;
     findOne(id: string): Promise<{
         id: string;
         name: string;
@@ -70,4 +80,5 @@ export declare class UserController {
         avatar: string | null;
         bgimg: string | null;
     }>;
+    sync(): Promise<void>;
 }

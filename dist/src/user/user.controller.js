@@ -35,6 +35,9 @@ let UserController = class UserController {
     findAll() {
         return this.userService.findAll();
     }
+    findUserPosts(userId) {
+        return this.userService.findUserPosts(userId);
+    }
     findOne(id) {
         return this.userService.findById(id);
     }
@@ -52,9 +55,12 @@ let UserController = class UserController {
     uploadFile(file) {
         return 'file uploaded';
     }
-    updateProfile(files, bio, session) {
+    async updateProfile(files, bio, session) {
         const userId = session.getUserId();
         return this.userService.fileUpload(userId, files.avatar[0].filename, files.bgImg[0].filename, bio);
+    }
+    async sync() {
+        return this.userService.sync();
     }
 };
 exports.UserController = UserController;
@@ -74,6 +80,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('posts/:nickname'),
+    __param(0, (0, common_1.Param)('nickname')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "findUserPosts", null);
 __decorate([
     (0, common_1.Get)('byId/:id'),
     __param(0, (0, common_1.Param)('id')),
@@ -135,8 +148,14 @@ __decorate([
     __param(2, (0, session_decorator_1.Session)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [file_upload_dto_1.FileUpload, String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateProfile", null);
+__decorate([
+    (0, common_1.Get)('sync'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "sync", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     (0, swagger_1.ApiTags)('user'),

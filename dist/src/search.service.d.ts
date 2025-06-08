@@ -8,6 +8,7 @@ export type UserSearchable = {
     id: string;
     name: string;
     nickname: string;
+    avatar?: string;
 };
 export declare class SearchService extends Meilisearch implements OnModuleInit {
     posts: Index<PostSearchable> | undefined;
